@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useState } from "react";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 export function Login() {
     const [username, setUsername] = useState("");
@@ -32,36 +33,37 @@ export function Login() {
     }
 
     return(
-        <div className="Auth-form-container">
-            <form className="Auth-form" onSubmit={handleSubmit}>
-          <div className="Auth-form-content">
-            <h3 className="Auth-form-title">Sign In</h3>
-            <div className="form-group mt-3">
-              <label>Username</label>
-              <input className="form-control mt-1" 
-                placeholder="Enter Username" 
-                name='username'  
-                type='text' value={username}
-                required 
-                onChange={e => setUsername(e.target.value)}/>
-            </div>
-            <div className="form-group mt-3">
-              <label>Password</label>
-              <input name='password' 
-                type="password"     
-                className="form-control mt-1"
-                placeholder="Enter password"
-                value={password}
-                required
-                onChange={e => setPassword(e.target.value)}/>
-            </div>
-            <div className="d-grid gap-2 mt-3">
-              <button type="submit" 
-                 className="btn btn-primary">Submit</button>
-            </div>
-          </div>
-       </form>
+        <div className="container">
+            <h2 className="my-4">Sign In</h2>
+            <form onSubmit={handleSubmit}>
+                <div className="form-group mt-3">
+                    <label>Username</label>
+                    <input 
+                        className="form-control mt-1" 
+                        placeholder="Enter Username" 
+                        name='username'  
+                        type='text' 
+                        value={username}
+                        required 
+                        onChange={e => setUsername(e.target.value)}
+                    />
+                </div>
+                <div className="form-group mt-3">
+                    <label>Password</label>
+                    <input 
+                        name='password' 
+                        type="password"     
+                        className="form-control mt-1"
+                        placeholder="Enter password"
+                        value={password}
+                        required
+                        onChange={e => setPassword(e.target.value)}
+                    />
+                </div>
+                <div className="d-grid gap-2 mt-3">
+                    <button type="submit" className="btn btn-primary">Submit</button>
+                </div>
+            </form>
         </div>
     )
 }
-        
