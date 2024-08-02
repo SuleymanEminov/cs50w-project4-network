@@ -7,24 +7,14 @@ class User(AbstractUser):
 
 
 class Post(models.Model):
-    id = models.AutoField(primary_key=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="posts")
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.TextField()
-    timestamp = models.DateTimeField(auto_now_add=True)
-    likes = models.ManyToManyField(User, blank=True, related_name="liked_posts")
-    # likes = models.IntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    likes = models.IntegerField(default=0)
 
-    def serialize(self):
-        return {
-            "id": self.id,
-            "user": self.user.username,
-            "content": self.content,
-            "timestamp": self.timestamp.strftime("%b %-d %Y, %-I:%M %p"),
-            "likes": self.likes.count()
-        }
-    
     def __str__(self):
-        return f"{self.user}: {self.content}"
+        return self.content[:20]
+    
     
 
 class Comment(models.Model):

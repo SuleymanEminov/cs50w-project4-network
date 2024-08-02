@@ -13,8 +13,8 @@ export function Navigation() {
         <Navbar bg="dark" variant="dark">
           <Navbar.Brand href="/">CS50W Network</Navbar.Brand>            
           <Nav className="me-auto"> 
-          {isAuth ? <Nav.Link href="/">Home</Nav.Link> : null}
           {isAuth ? <Nav.Link href="/new-post">New Post</Nav.Link> : null}
+          <Nav.Link href="/all-posts">All Posts</Nav.Link>
           </Nav>
           <Nav>
           {isAuth ? <Nav.Link href="/logout">Logout</Nav.Link> :  
