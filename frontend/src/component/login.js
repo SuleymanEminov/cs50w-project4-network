@@ -5,6 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 export function Login() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [errorMessage, setErrorMessage] = useState(""); // State to store error messages
 
     const handleSubmit = async e => {
         e.preventDefault();
@@ -14,27 +15,44 @@ export function Login() {
             password: password
         };
 
-        // Create POST request to backend
-        const {data} = await axios.post("http://localhost:8000/token/", user, 
-        {
-            headers : 
+        try {
+            // Create POST request to backend
+            const {data} = await axios.post("http://localhost:8000/api/token/", user, 
             {
-                "Content-Type": "application/json"},
-                withCredentials: true
-            });
+                headers : 
+                {
+                    "Content-Type": "application/json"},
+                    withCredentials: true
+                });
 
-        // Initialize the access & refresh token in localstorage.      
-        localStorage.clear();
-        localStorage.setItem('access_token', data.access);
-        localStorage.setItem('refresh_token', data.refresh);
+            // Initialize the access & refresh token in localstorage.      
+            localStorage.clear();
+            localStorage.setItem('access_token', data.access);
+            localStorage.setItem('refresh_token', data.refresh);
 
-        axios.defaults.headers.common['Authorization'] = "Bearer " + data.access;
-        window.location.href = "/";
+            axios.defaults.headers.common['Authorization'] = "Bearer " + data.access;
+            window.location.href = "/";
+        }
+        catch (error) {
+            // Handle error response
+            if (error.response && error.response.status === 401) {
+                // Unauthorized: Invalid username or password
+                setErrorMessage("Invalid username or password. Please try again.");
+            } else {
+                // Other errors
+                setErrorMessage("An error occurred. Please try again later.");
+            }
+        }
     }
 
     return(
         <div className="container">
             <h2 className="my-4">Sign In</h2>
+            {errorMessage && (
+                <div className="alert alert-danger col-lg-4 offset-lg-4 mt-3" role="alert">
+                    {errorMessage}
+                </div>
+            )}
             <form onSubmit={handleSubmit}>
                 <div className="form-group mt-3">
                     <label>Username</label>
