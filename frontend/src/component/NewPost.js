@@ -8,10 +8,16 @@ export const NewPost = ({ onPostCreated }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const accessToken = localStorage.getItem('access_token');
+        if (!accessToken) {
+            setMessage('You must be logged in to create a post.');
+            return; // Stop the function from proceeding
+        }
+
         const post = { content };
 
         try {
-            const { data } = await axios.post('http://localhost:8000/api/create-post/', post, {
+            const { data } = await axios.post('/api/create-post/', post, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem('access_token')}`
@@ -19,8 +25,8 @@ export const NewPost = ({ onPostCreated }) => {
             });
             setMessage('Post created successfully!');
             setContent('');
-            onPostCreated();
         } catch (error) {
+            console.error('Error creating post:', error.response || error.request || error.message);
             setMessage('Failed to create post. Please try again.');
         }
     };

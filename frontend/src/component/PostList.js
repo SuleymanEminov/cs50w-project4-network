@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { Link } from 'react-router-dom';
 
 export const PostList = () => {
     const [posts, setPosts] = useState([]);
@@ -13,7 +14,7 @@ export const PostList = () => {
 
     const fetchPosts = async () => {
         try {
-            const { data } = await axios.get('http://localhost:8000/api/all-posts/');
+            const { data } = await axios.get('/api/all-posts/');
             setPosts(data);
             setLoading(false);
         } catch (error) {
@@ -37,7 +38,13 @@ export const PostList = () => {
                 posts.map(post => (
                     <div key={post.id} className="card my-3">
                         <div className="card-body">
-                            <h5 className="card-title">{post.author.username || 'anonymous'}</h5>
+                        <h5 className="card-title">
+                            {post.author?.username ? (
+                            <Link to={`/profile/${encodeURIComponent(post.author.username)}`}>
+                            {post.author.username}
+                          </Link>
+                        ) : 'anonymous'}
+                        </h5>
                             <p className="card-text">{post.content}</p>
                             <p className="card-text">
                                 <small className="text-muted">

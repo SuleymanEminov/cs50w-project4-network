@@ -12,7 +12,7 @@ export const Home = () => {
         else{
             (async () => {
                 try {
-                    const {data} = await axios.get("http://localhost:8000/home/", 
+                    const {data} = await axios.get("/home/", 
                     {
                         headers : 
                         {

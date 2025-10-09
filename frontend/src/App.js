@@ -7,6 +7,8 @@ import {Logout} from './component/Logout';
 import {NewPost} from './component/NewPost';
 import {Register} from './component/Register';
 import {PostList} from './component/PostList';
+import {Profile} from './component/Profile';
+import {Following} from './component/Following';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
@@ -21,6 +23,8 @@ function App() {
     <Route path="/logout" element={<Logout/>}/>
     <Route path="/register" element={<Register/>}/>
     <Route path="/all-posts" element={<PostList/>}/>
+    <Route path="/profile/:username" element={<Profile/>}/>
+    <Route path="/following" element={<Following/>}/>
     <Route path="*" element={<h1>Not Found</h1>}/>
   </Routes>
 </BrowserRouter>;

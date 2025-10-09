@@ -17,7 +17,7 @@ export function Login() {
 
         try {
             // Create POST request to backend
-            const {data} = await axios.post("http://localhost:8000/api/token/", user, 
+            const {data} = await axios.post("/api/token/", user, 
             {
                 headers : 
                 {

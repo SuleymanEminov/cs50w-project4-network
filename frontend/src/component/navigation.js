@@ -4,10 +4,22 @@ import React, { useState, useEffect} from 'react';
 export function Navigation() {
    const [isAuth, setIsAuth] = useState(false);
    useEffect(() => {
-     if (localStorage.getItem('access_token') !== null) {
-        setIsAuth(true); 
-      }
-    }, [isAuth]);
+     const checkAuth = () => {
+       if (localStorage.getItem('access_token') !== null) {
+         setIsAuth(true);
+       } else {
+         setIsAuth(false);
+       }
+     };
+ 
+     checkAuth();
+ 
+     window.addEventListener('storage', checkAuth);
+ 
+     return () => {
+       window.removeEventListener('storage', checkAuth);
+     };
+   }, []);
      return ( 
       <div>
         <Navbar bg="dark" variant="dark">
@@ -24,6 +36,7 @@ export function Navigation() {
           {isAuth ? null :  
                     <Nav.Link href="/Register">Register</Nav.Link>}
           </Nav>
+          {isAuth ? <Nav.Link href="/following">Following</Nav.Link> : null}
         </Navbar>
        </div>
      );
