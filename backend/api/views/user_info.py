@@ -34,7 +34,7 @@ class ProfileView(APIView):
                 'likes': post.likes
                 } for post in posts
             ],
-            'is_following': request.user in user.followers.all(),
+            'is_following': Follow.objects.filter(follower=request.user, following=user).exists(),
             'is_self': request.user == user
         }
         return JsonResponse(profile_data)
