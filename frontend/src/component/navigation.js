@@ -27,6 +27,9 @@ export function Navigation() {
           <Nav className="me-auto"> 
           {isAuth ? <Nav.Link href="/new-post">New Post</Nav.Link> : null}
           <Nav.Link href="/all-posts">All Posts</Nav.Link>
+
+          {isAuth ? <Nav.Link href="/following">Following</Nav.Link> : null}
+
           </Nav>
           <Nav>
           {isAuth ? <Nav.Link href="/logout">Logout</Nav.Link> :  
@@ -36,7 +39,6 @@ export function Navigation() {
           {isAuth ? null :  
                     <Nav.Link href="/Register">Register</Nav.Link>}
           </Nav>
-          {isAuth ? <Nav.Link href="/following">Following</Nav.Link> : null}
         </Navbar>
        </div>
      );

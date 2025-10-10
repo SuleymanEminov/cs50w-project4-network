@@ -17,27 +17,29 @@ class UserDetailView(generics.RetrieveAPIView):
           return self.request.user
      
 
+from rest_framework.pagination import PageNumberPagination
+
 class ProfileView(APIView):
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
     def get(self, request, username):
         user = get_object_or_404(User, username=username)
         posts = Post.objects.filter(author=user).order_by('-created_at')
+
+        paginator = PageNumberPagination()
+        paginator.page_size = 10
+        paginated_posts = paginator.paginate_queryset(posts, request)
+        serializer = PostSerializer(paginated_posts, many=True)
+
         profile_data = {
             'username': user.username,
             'followers': user.followers.count(),
             'following': user.following.count(),
-            'posts': [
-                {'id': post.id, 
-                'content': post.content, 
-                'created_at': post.created_at, 
-                'likes': post.likes
-                } for post in posts
-            ],
+            'posts': serializer.data,
             'is_following': Follow.objects.filter(follower=request.user, following=user).exists(),
             'is_self': request.user == user
         }
-        return JsonResponse(profile_data)
+        return paginator.get_paginated_response(profile_data)
 
 
 # Follow and Unfollow endpoints

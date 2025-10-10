@@ -1,25 +1,31 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import axios from '../interceptors/axios';
 import { Link } from 'react-router-dom';
 
 export const Following = () => {
-  const [posts, setPosts] = useState(null);
+  const [posts, setPosts] = useState([]);
   const [error, setError] = useState('');
+  const [nextPage, setNextPage] = useState(null);
+  const [prevPage, setPrevPage] = useState(null);
 
   useEffect(() => {
-    (async () => {
-      try {
-        const { data } = await axios.get('/api/following-posts/', {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('access_token')}`
-          }
-        });
-        setPosts(data);
-      } catch (e) {
-        setError('Failed to load following feed.');
-      }
-    })();
+    fetchPosts('/api/following-posts/');
   }, []);
+
+  const fetchPosts = async (url) => {
+    try {
+      const { data } = await axios.get(url, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+        }
+      });
+      setPosts(data.results);
+      setNextPage(data.next ? new URL(data.next).pathname + new URL(data.next).search : null);
+      setPrevPage(data.previous ? new URL(data.previous).pathname + new URL(data.previous).search : null);
+    } catch (e) {
+      setError('Failed to load following feed.');
+    }
+  };
 
   if (error) return <div className="container mt-4">{error}</div>;
   if (!posts) return <div className="container mt-4">Loading...</div>;
@@ -48,6 +54,10 @@ export const Following = () => {
           </div>
         ))
       )}
+      <div className="d-flex justify-content-between">
+        <button className="btn btn-primary" onClick={() => fetchPosts(prevPage)} disabled={!prevPage}>Previous</button>
+        <button className="btn btn-primary" onClick={() => fetchPosts(nextPage)} disabled={!nextPage}>Next</button>
+      </div>
     </div>
   );
 };

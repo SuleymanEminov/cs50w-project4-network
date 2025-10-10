@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import axios from '../interceptors/axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 export const NewPost = ({ onPostCreated }) => {

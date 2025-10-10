@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios from '../interceptors/axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Link } from 'react-router-dom';
 
@@ -7,15 +7,19 @@ export const PostList = () => {
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [nextPage, setNextPage] = useState(null);
+    const [prevPage, setPrevPage] = useState(null);
 
     useEffect(() => {
-        fetchPosts();
+        fetchPosts('/api/all-posts/');
     }, []);
 
-    const fetchPosts = async () => {
+    const fetchPosts = async (url) => {
         try {
-            const { data } = await axios.get('/api/all-posts/');
-            setPosts(data);
+            const { data } = await axios.get(url);
+            setPosts(data.results);
+            setNextPage(data.next ? new URL(data.next).pathname + new URL(data.next).search : null);
+            setPrevPage(data.previous ? new URL(data.previous).pathname + new URL(data.previous).search : null);
             setLoading(false);
         } catch (error) {
             setError('Failed to fetch posts');
@@ -60,6 +64,10 @@ export const PostList = () => {
             ) : (
                 <div>No posts available</div>
             )}
+            <div className="d-flex justify-content-between">
+                <button className="btn btn-primary" onClick={() => fetchPosts(prevPage)} disabled={!prevPage}>Previous</button>
+                <button className="btn btn-primary" onClick={() => fetchPosts(nextPage)} disabled={!nextPage}>Next</button>
+            </div>
         </div>
     );
 };

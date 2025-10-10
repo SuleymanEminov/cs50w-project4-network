@@ -6,10 +6,14 @@ from ..models import Post
 from ..serializers import PostSerializer
 
 
+from rest_framework.pagination import PageNumberPagination
+
+
 class ListPostView(generics.ListAPIView):
     queryset = Post.objects.all().order_by('-created_at')
     serializer_class = PostSerializer
     permission_classes = [permissions.AllowAny]
+    pagination_class = PageNumberPagination
 
 class CreatePostView(generics.CreateAPIView):
     queryset = Post.objects.all()
@@ -22,6 +26,7 @@ class CreatePostView(generics.CreateAPIView):
 class FollowingListView(generics.ListAPIView):
     serializer_class = PostSerializer
     permission_classes = (IsAuthenticated,)
+    pagination_class = PageNumberPagination
 
     def get_queryset(self):
         following_users = self.request.user.following.all()
