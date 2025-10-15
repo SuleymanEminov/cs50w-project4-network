@@ -32,5 +32,17 @@ class FollowingListView(generics.ListAPIView):
         following_users = self.request.user.following.all()
         return Post.objects.filter(author__in=following_users).order_by('-created_at')
 
+class UpdatePostView(generics.RetrieveUpdateAPIView):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+    permission_classes = (IsAuthenticated,)
 
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if instance.author != request.user:
+            return Response({'detail': 'You do not have permission to perform this action.'},
+                            status = 403)
+        
+        return super().update(request, *args, **kwargs)
     

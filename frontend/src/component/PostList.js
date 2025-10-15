@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from '../interceptors/axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Link } from 'react-router-dom';
+import { Button, Form } from 'react-bootstrap';
 
 export const PostList = () => {
     const [posts, setPosts] = useState([]);
@@ -9,10 +10,23 @@ export const PostList = () => {
     const [error, setError] = useState(null);
     const [nextPage, setNextPage] = useState(null);
     const [prevPage, setPrevPage] = useState(null);
+    const [user, setUser] = useState(null);
+    const [editingPostId, setEditingPostId] = useState(null);
+    const [editedContent, setEditedContent] = useState('');
 
     useEffect(() => {
         fetchPosts('/api/all-posts/');
+        fetchUser();
     }, []);
+
+    const fetchUser = async () => {
+        try {
+            const { data } = await axios.get('/api/user/');
+            setUser(data);
+        } catch (error) {
+            console.error('Failed to fetch user', error);
+        }
+    };
 
     const fetchPosts = async (url) => {
         try {
@@ -24,6 +38,27 @@ export const PostList = () => {
         } catch (error) {
             setError('Failed to fetch posts');
             setLoading(false);
+        }
+    };
+
+    const handleEdit = (post) => {
+        setEditingPostId(post.id);
+        setEditedContent(post.content);
+    };
+
+    const handleCancel = () => {
+        setEditingPostId(null);
+        setEditedContent('');
+    };
+
+    const handleSave = async (postId) => {
+        try {
+            await axios.put(`/api/posts/${postId}/`, { content: editedContent });
+            setEditingPostId(null);
+            setEditedContent('');
+            fetchPosts('/api/all-posts/'); // Refresh posts
+        } catch (error) {
+            console.error('Failed to update post', error);
         }
     };
 
@@ -42,22 +77,35 @@ export const PostList = () => {
                 posts.map(post => (
                     <div key={post.id} className="card my-3">
                         <div className="card-body">
-                        <h5 className="card-title">
-                            {post.author?.username ? (
-                            <Link to={`/profile/${encodeURIComponent(post.author.username)}`}>
-                            {post.author.username}
-                          </Link>
-                        ) : 'anonymous'}
-                        </h5>
-                            <p className="card-text">{post.content}</p>
-                            <p className="card-text">
-                                <small className="text-muted">
-                                    {new Date(post.created_at).toLocaleString()}
-                                </small>
-                            </p>
-                            <p className="card-text">
-                                <small className="text-muted">Likes: {post.likes}</small>
-                            </p>
+                            <h5 className="card-title">
+                                {post.author?.username ? (
+                                    <Link to={`/profile/${encodeURIComponent(post.author.username)}`}>
+                                        {post.author.username}
+                                    </Link>
+                                ) : 'anonymous'}
+                            </h5>
+                            {editingPostId === post.id ? (
+                                <div>
+                                    <Form.Control as="textarea" rows={3} value={editedContent} onChange={(e) => setEditedContent(e.target.value)} />
+                                    <Button variant="primary" className="mt-2" onClick={() => handleSave(post.id)}>Save</Button>
+                                    <Button variant="secondary" className="mt-2 ms-2" onClick={handleCancel}>Cancel</Button>
+                                </div>
+                            ) : (
+                                <div>
+                                    <p className="card-text">{post.content}</p>
+                                    <p className="card-text">
+                                        <small className="text-muted">
+                                            {new Date(post.created_at).toLocaleString()}
+                                        </small>
+                                    </p>
+                                    <p className="card-text">
+                                        <small className="text-muted">Likes: {post.likes}</small>
+                                    </p>
+                                    {user && user.username === post.author?.username && (
+                                        <Button variant="primary" onClick={() => handleEdit(post)}>Edit</Button>
+                                    )}
+                                </div>
+                            )}
                         </div>
                     </div>
                 ))

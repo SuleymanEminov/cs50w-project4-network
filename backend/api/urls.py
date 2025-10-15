@@ -16,6 +16,7 @@ urlpatterns = [
     # Posts
     path('api/create-post/', views.CreatePostView.as_view(), name='create-post'),
     path('api/all-posts/', views.ListPostView.as_view(), name='list-post'),
+    path('api/posts/<int:pk>/', views.UpdatePostView.as_view(), name='update-post'),
     # Profile
     path('api/profile/<str:username>/', views.ProfileView.as_view(), name='profile'),
     # Follow and Unfollow
