@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 export const Register = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: '',
     password: '',
@@ -35,7 +37,7 @@ export const Register = () => {
       setMessage('Registration successful!');
       
       axios.defaults.headers.common['Authorization'] = "Bearer " + data.access;
-      window.location.href = "/";
+      navigate("/");
     } catch (error) {
         if (error.response && error.response.data) {
           const errorMessage = error.response.data.username

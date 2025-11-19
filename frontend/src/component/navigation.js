@@ -1,6 +1,8 @@
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
+import { LinkContainer } from 'react-router-bootstrap';
 import React, { useState, useEffect} from 'react';
+
 export function Navigation() {
    const [isAuth, setIsAuth] = useState(false);
    useEffect(() => {
@@ -23,21 +25,41 @@ export function Navigation() {
      return ( 
       <div>
         <Navbar bg="dark" variant="dark">
-          <Navbar.Brand href="/">CS50W Network</Navbar.Brand>            
+          <LinkContainer to="/">
+            <Navbar.Brand>CS50W Network</Navbar.Brand>
+          </LinkContainer>
           <Nav className="me-auto"> 
-          {isAuth ? <Nav.Link href="/new-post">New Post</Nav.Link> : null}
-          <Nav.Link href="/all-posts">All Posts</Nav.Link>
-
-          {isAuth ? <Nav.Link href="/following">Following</Nav.Link> : null}
-
+          {isAuth ? (
+            <LinkContainer to="/new-post">
+              <Nav.Link>New Post</Nav.Link>
+            </LinkContainer>
+          ) : null}
+          <LinkContainer to="/all-posts">
+            <Nav.Link>All Posts</Nav.Link>
+          </LinkContainer>
+          {isAuth ? (
+            <LinkContainer to="/following">
+              <Nav.Link>Following</Nav.Link>
+            </LinkContainer>
+          ) : null}
           </Nav>
           <Nav>
-          {isAuth ? <Nav.Link href="/logout">Logout</Nav.Link> :  
-                    <Nav.Link href="/login">Login</Nav.Link>}
+          {isAuth ? (
+            <LinkContainer to="/logout">
+              <Nav.Link>Logout</Nav.Link>
+            </LinkContainer>
+          ) : (
+            <LinkContainer to="/login">
+              <Nav.Link>Login</Nav.Link>
+            </LinkContainer>
+          )}
           </Nav>
           <Nav>
-          {isAuth ? null :  
-                    <Nav.Link href="/Register">Register</Nav.Link>}
+          {!isAuth && (
+            <LinkContainer to="/register">
+              <Nav.Link>Register</Nav.Link>
+            </LinkContainer>
+          )}
           </Nav>
         </Navbar>
        </div>

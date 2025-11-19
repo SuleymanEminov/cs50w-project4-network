@@ -1,13 +1,15 @@
 import React from 'react';
 import {useEffect, useState} from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 export const Home = () => {
+    const navigate = useNavigate();
     const [message, setMessage] = useState("");
     
     useEffect (() => {
         if(localStorage.getItem('access_token') === null) {
-            window.location.href = "/login";
+            navigate("/login");
         }
         else{
             (async () => {
